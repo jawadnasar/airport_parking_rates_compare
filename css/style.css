@@ -1,0 +1,43 @@
+ body {
+    font-family: Arial, sans-serif;
+    padding: 15px;
+    width: 250px;
+}
+
+input[type="date"] {
+    width: 100%;
+    padding: 8px;
+    margin: 5px 0 10px 0;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 15px;
+}
+
+input[type="checkbox"] {
+    margin-right: 8px;
+    accent-color: #007bff;
+    transform: scale(1.1);
+}
+
+label {
+    font-size: 15px;
+    margin-bottom: 5px;
+    display: block;
+}
+
+button {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+#output {
+    margin-top: 15px;
+    font-weight: bold;
+}
