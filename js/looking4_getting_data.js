@@ -27,7 +27,7 @@ $(document).ready(function () {
                         'to_date': to_date, // to date like "Tue, 21 Nov 2023"
                         'to_time': to24HourFormat(document.getElementsByClassName('date-time-picker__value')[3].innerHTML.trim()), // to time like "10:00 AM"
                         'airport_name': document.querySelector('.airport-select input').value.trim(), // airport name like "London Heathrow Airport"
-                        'parking_type': '',
+                        'parking_type': 'Mix',
                         'transfer_time': product_card[i].querySelector('.transfer-text').innerText.trim(),
                         'website_id': 1
                     });
@@ -44,7 +44,6 @@ $(document).ready(function () {
                     // Get extension local data (popup form data) and trying to refresh the page
                     chrome.storage.local.get('popup_form_data', function (result) {
                         if (result && result.popup_form_data) {
-                            console.log('from to date', from_date , result.popup_form_data.fromDate, result.popup_form_data)
                             if (from_date == result.popup_form_data.toDate) {
                                 alert('I have updated the prices for you till ' + result.popup_form_data.toDate);
                             } else {
@@ -76,17 +75,17 @@ $(document).ready(function () {
         });
         /* Observe the page for changes end*/
 
-        $('.search-parking-filter__list-desktop-item').html();
-        chrome.runtime.sendMessage({
-            page_from: "looking4_getting_data",
-            action: "get_pricing_data_for_filling",
-            data: {
-                'company_name': 'Looking4Parking',
-                'price': 44
-            }
-        }, (res) => {
-            console.log('res:', res);
-        });
+        // $('.search-parking-filter__list-desktop-item').html();
+        // chrome.runtime.sendMessage({
+        //     page_from: "looking4_getting_data",
+        //     action: "get_pricing_data_for_filling",
+        //     data: {
+        //         'company_name': 'Looking4Parking',
+        //         'price': 44
+        //     }
+        // }, (res) => {
+        //     console.log('res:', res);
+        // });
     }
 
 });

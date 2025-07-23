@@ -7,7 +7,6 @@ chrome.runtime.onMessage.addListener(function (param, sender, sendResponse) {
                 fetch_call_db(sendResponse, param['action'], param['pricing_data']);
                 break;
             case 'refresh_pages_for_data': // * Refreshing the pages for data on user request
-                console.log('My param FOR REFRESH DATA:', param);
                 const from_date = increment_from_date_by_one(param['from_date']);
                 sendResponse({
                     message: 'Refreshing pages for data',
@@ -17,6 +16,23 @@ chrome.runtime.onMessage.addListener(function (param, sender, sendResponse) {
         return true;
     }
     /* Looking4parking prices Details END */
+
+    /* CompareParking prices Details Start */
+    if (param['page_from'] == 'compareparking_getting_data') {
+        switch (param['action']) {
+            case 'get_pricing_data_for_filling': // * Getting rates about all the services from looking4.com
+                fetch_call_db(sendResponse, param['action'], param['pricing_data']);
+                break;
+            case 'refresh_pages_for_data': // * Refreshing the pages for data on user request]
+                const from_date = increment_from_date_by_one(param['from_date']);
+                sendResponse({
+                    message: 'Refreshing pages for data',
+                    refreshing_url: start_refreshing_compare_parking_prices(from_date, param['gapDays'], 'Refresh')
+                });
+        }
+        return true;
+    }
+    /* CompareParking prices Details END */
 
     /* Popup form data saving START */
     if (param['page_from'] == 'popup') {
@@ -115,7 +131,7 @@ function start_refreshing_compare_parking_prices(from_date, gapDays, refresh) {
         // Calculate end_date by adding gapDays to fromDate
         const end_date = get_end_date(from_date, gapDays);
         // Open the Looking4Parking website with the specified dates
-        const url = `https://compareparkingdeals.co.uk/search/?departure=${from_date}&arrival=${end_date}&airport=LGW&pop_extension=true`;
+        const url = `https://compareparkingdeals.co.uk/search/?departure=${from_date}+12%3A00&arrival=${end_date}+12%3A00&airport=LGW&pop_extension=true`;
 
         if (refresh == 'Refresh') {
             // Redirect the current tab to the Looking4Parking URL
