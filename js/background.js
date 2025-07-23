@@ -22,10 +22,16 @@ chrome.runtime.onMessage.addListener(function (param, sender, sendResponse) {
     if (param['page_from'] == 'popup') {
         switch (param['action']) {
             case 'refresh_pages_for_data': // * Refreshing the pages for data on user request
-                if (param['data'].lookingForParking) {
+                if (param['data'].lookingForParking) {      // Data for Looking4Parking
                     sendResponse({
                         message: 'Refreshing pages for data',
                         refreshing_url: start_refreshing_looking4_parking_prices(param['data'].fromDate, param['data'].gapDays, 'New Tab')
+                    });
+                }
+                if (param['data'].compareParking) {      // Data for CompareParking
+                    sendResponse({
+                        message: 'Refreshing pages for data',
+                        refreshing_url: start_refreshing_compare_parking_prices(param['data'].fromDate, param['data'].gapDays, 'New Tab')
                     });
                 }
                 break;
@@ -98,6 +104,26 @@ function start_refreshing_looking4_parking_prices(from_date, gapDays, refresh) {
             // Open a new tab with the Looking4Parking URL
             chrome.tabs.create({ url: url }, function (tab) {
                 console.log('Opened Looking4Parking tab:', tab);
+            });
+        }
+    }
+}
+
+// Function to start refreshing compare parking prices
+function start_refreshing_compare_parking_prices(from_date, gapDays, refresh) {
+    if (from_date && gapDays) {
+        // Calculate end_date by adding gapDays to fromDate
+        const end_date = get_end_date(from_date, gapDays);
+        // Open the Looking4Parking website with the specified dates
+        const url = `https://compareparkingdeals.co.uk/search/?departure=${from_date}&arrival=${end_date}&airport=LGW&pop_extension=true`;
+
+        if (refresh == 'Refresh') {
+            // Redirect the current tab to the Looking4Parking URL
+            return url;
+        } else {
+            // Open a new tab with the Looking4Parking URL
+            chrome.tabs.create({ url: url }, function (tab) {
+                console.log('Opened CompareParking tab:', tab);
             });
         }
     }
