@@ -16,6 +16,16 @@
         },
         {
             "matches": [
+                "https://compareparkingdeals.co.uk/search*"
+            ],
+            "js": [
+                "/js/jquery.min.js",
+                "/js/compare_parking_deal_getting_data.js"
+            ],
+            "run_at": "document_end"
+        },
+        {
+            "matches": [
                 "*://*/*"
             ],
             "js": [

@@ -7,9 +7,12 @@ chrome.runtime.onMessage.addListener(function (param, sender, sendResponse) {
                 fetch_call_db(sendResponse, param['action'], param['pricing_data']);
                 break;
             case 'refresh_pages_for_data': // * Refreshing the pages for data on user request
-            console.log('My param:', param);
-                const from_date =  increment_from_date_by_one(param['from_date']);
-                start_refreshing_looking4_parking_prices(from_date, param['gapDays'], 'Refresh');
+                console.log('My param FOR REFRESH DATA:', param);
+                const from_date = increment_from_date_by_one(param['from_date']);
+                sendResponse({
+                    message: 'Refreshing pages for data',
+                    refreshing_url: start_refreshing_looking4_parking_prices(from_date, param['gapDays'], 'Refresh')
+                });
         }
         return true;
     }
@@ -20,7 +23,10 @@ chrome.runtime.onMessage.addListener(function (param, sender, sendResponse) {
         switch (param['action']) {
             case 'refresh_pages_for_data': // * Refreshing the pages for data on user request
                 if (param['data'].lookingForParking) {
-                   return start_refreshing_looking4_parking_prices(param['data'].fromDate, param['data'].gapDays, 'New Tab');
+                    sendResponse({
+                        message: 'Refreshing pages for data',
+                        refreshing_url: start_refreshing_looking4_parking_prices(param['data'].fromDate, param['data'].gapDays, 'New Tab')
+                    });
                 }
                 break;
         }
@@ -87,7 +93,7 @@ function start_refreshing_looking4_parking_prices(from_date, gapDays, refresh) {
 
         if (refresh == 'Refresh') {
             // Redirect the current tab to the Looking4Parking URL
-            return url;    
+            return url;
         } else {
             // Open a new tab with the Looking4Parking URL
             chrome.tabs.create({ url: url }, function (tab) {
@@ -107,7 +113,7 @@ function get_end_date(fromDate, gapDays) {
     return end_date;
 }
 
-function increment_from_date_by_one(from_date){
+function increment_from_date_by_one(from_date) {
     const fromDateObj = new Date(from_date);
     fromDateObj.setDate(fromDateObj.getDate() + 1);
     const pad = n => n.toString().padStart(2, '0');
