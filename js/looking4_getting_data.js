@@ -45,7 +45,11 @@ $(document).ready(function () {
                     chrome.storage.local.get('popup_form_data', function (result) {
                         if (result && result.popup_form_data) {
                             if (from_date == result.popup_form_data.toDate) {
-                                alert('I have updated the prices for you till ' + result.popup_form_data.toDate);
+                                Swal.fire({
+                                    position: 'center',
+                                    type: 'success',
+                                    title: 'Prices updated till ' + result.popup_form_data.toDate
+                                })
                             } else {
                                 // Try to refresh the page with new data
                                 chrome.runtime.sendMessage({
