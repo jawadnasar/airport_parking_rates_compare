@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('website_id')->constrained('parking_websites');
             $table->char('airport_code', 3); // "JFK", "LAX", etc.
+            $table->string('parking_company_name')->nullable();
             $table->string('parking_type');  // "Onsite", "Offsite", "Meet & Greet"
             $table->date('from_date');
             $table->date('to_date')->nullable();

@@ -18,28 +18,10 @@ class ParkingWebsitesSeeder extends Seeder
                 'trust_score' => 4.5
             ],
             [
-                'name' => 'AirportParking',
-                'base_url' => 'www.airportparking.com',
-                'logo_url' => 'https://www.airportparking.com/images/logo.png',
+                'name' => 'Compare Parking Deals',
+                'base_url' => 'https://compareparkingdeals.co.uk/',
+                'logo_url' => 'https://compareparkingdeals.co.uk/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Flogo.df102680.png&w=384&q=75',
                 'trust_score' => 4.2
-            ],
-            [
-                'name' => 'ParkFly',
-                'base_url' => 'www.parkfly.com',
-                'logo_url' => 'https://www.parkfly.com/assets/img/logo.svg',
-                'trust_score' => 4.0
-            ],
-            [
-                'name' => 'SkyParkSecure',
-                'base_url' => 'www.skyparksecure.com',
-                'logo_url' => 'https://skyparksecure.com/wp-content/uploads/2023/01/skypark-logo.png',
-                'trust_score' => 4.7
-            ],
-            [
-                'name' => 'JustPark',
-                'base_url' => 'www.justpark.com',
-                'logo_url' => 'https://www.justpark.com/images/justpark-logo.svg',
-                'trust_score' => 4.3
             ]
         ];
 

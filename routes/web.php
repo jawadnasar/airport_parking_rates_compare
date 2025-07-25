@@ -8,3 +8,5 @@ Route::get('/', function () {
 });
 
 // Route::post('/api/login', [AuthController::class, 'login']);
+
+Route::get('all_ariport_parking_prices', [App\Http\Controllers\API\CompareAllWebsitesPricesController::class, 'index']);

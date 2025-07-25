@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Models\ParkingWebsitesComparePrices;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class CompareAllWebsitesPricesController extends Controller
 {
@@ -20,51 +21,72 @@ class CompareAllWebsitesPricesController extends Controller
      */
     public function store(Request $request)
     {
+        // return response()->json([
+        //     'message' => 'This is the store method of CompareAllWebsitesPricesController',
+        //     'data'    => $request->all(),
+        //     'data2' =>file_get_contents('php://input')
+        // ], 200);
+        // $input_string = file_get_contents('php://input'); // if the input is a string then it will be the request body
+        // if ($input_string) {
+        //     $request = json_decode($input_string, true); // decode the JSON string to an associative array
+        // }
         try {
-            $request->validate([
-                'website_id'       => 'required|integer|exists:parking_websites,id',
-                'price'            => 'required|numeric',
-                'airport_code'     => 'required|string|size:3',
-                'parking_type'     => 'required|string|max:50',
-                'from_date'        => 'required|date',
-                'to_date'          => 'nullable|date|after_or_equal:from_date',
-                'from_time'        => 'nullable|date_format:H:i',
-                'to_time'          => 'nullable|date_format:H:i',
-                'discount'         => 'nullable|numeric|min:0',
-                'transfer_time'    => 'nullable|string|max:20',
-                'is_available'     => 'boolean',
-                'price_updated_at' => 'required|date',
-            ]);
 
-            $cp = new ParkingWebsitesComparePrices();       // cp-> compare prices
-            $cp->website_id = $request->website_id;
-            $cp->price = $request->price;
-            $cp->airport_code = $request->airport_code;
-            $cp->parking_type = $request->parking_type;
-            $cp->from_date = $request->from_date;
-            $cp->to_date = $request->to_date;
-            $cp->discount = $request->discount;
-            $cp->transfer_time = $request->transfer_time;
-            $cp->is_available = $request->is_available ?? true; // Default to true
-            $cp->price_updated_at = now(); // Set current time as default
+            // Deleting the records for today that already exist
+            ParkingWebsitesComparePrices::where('website_id', $request[0]['website_id'])
+                ->whereDate('from_date', $request[0]['from_date'])
+                ->whereDate('to_date', $request[0]['to_date'])
+                ->whereDate('created_at', now()->toDateString())
+                ->delete();
 
-            $cp->save();
-            if($cp->wasRecentlyCreated) {
-                return response()->json([
-                    'message' => 'Parking website price created successfully',
-                    'data'    => $cp,
-                ], 201);
-            } else {
-                return response()->json([
-                    'message' => 'Parking website price already exists',
-                    'data'    => $cp,
-                ], 200);
+            $data = $request->json()->all(); // Get the JSON data from the request
+            foreach ($data as $key => $item) {
+                $validator = Validator::make($item, [
+                    'website_id'    => 'required|integer|exists:parking_websites,id',
+                    'product_title' => 'required|string|max:255',
+                    'price'         => 'required|numeric',
+                    'airport_code'  => 'required|string',
+                    'parking_type'  => 'required|string|max:50',
+                    'from_date'     => 'required|date',
+                    'to_date'       => 'nullable|date|after_or_equal:from_date',
+                    'from_time'     => 'nullable|date_format:H:i',
+                    'to_time'       => 'nullable|date_format:H:i',
+                    'transfer_time' => 'nullable|string',
+                    'is_available'  => 'boolean',
+                ]);
+
+                $cp                       = new ParkingWebsitesComparePrices(); // cp-> compare prices
+                $cp->website_id           = $item['website_id'];
+                $cp->parking_company_name = $item['product_title']; // Assuming product_title is the parking company name
+                $cp->price                = $item['price'];
+                $cp->airport_code         = 'LGW'; // Assuming 'LGW' is a constant airport code, you can change it as needed
+                $cp->parking_type         = $item['parking_type'];
+                $cp->from_date            = $item['from_date'];
+                $cp->to_date              = $item['to_date'];
+                $cp->from_time            = $item['from_time'] ?? null; // Nullable, so default to null if not provided
+                $cp->to_time              = $item['to_time'] ?? null;   // Nullable, so default to null if not provide
+                $cp->transfer_time        = $item['transfer_time'];
+                $cp->is_available         = $item['is_available'] ?? true; // Default to true
+                $cp->price_updated_at     = now();                         // Set current time as default
+                $cp->parking_type         = $item['parking_type'];                        // Default parking type if not provided
+
+                $cp->save();
+                if (! $cp->wasRecentlyCreated) {
+                    return response()->json([
+                        'message' => 'Parking website price already exists',
+                        'data'    => $cp,
+                    ], 200);
+                }
             }
-        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'message' => 'Parking website price created successfully',
+            ], 201);
+
+        } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Error',
-                'errors'  => $e->errors(),
-            ], 422);
+                'error'   => $e->getMessage(),
+            ], 500);
         }
     }
 
