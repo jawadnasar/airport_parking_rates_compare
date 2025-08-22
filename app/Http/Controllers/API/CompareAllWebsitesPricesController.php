@@ -13,7 +13,8 @@ class CompareAllWebsitesPricesController extends Controller
      */
     public function index()
     {
-        dd('This is the index method of CompareAllWebsitesPricesController');
+        // dd('This is the index method of CompareAllWebsitesPricesController');
+        return view('all_airport_parking_prices');
     }
 
     /**
